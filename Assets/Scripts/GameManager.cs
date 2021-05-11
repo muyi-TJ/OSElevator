@@ -28,7 +28,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Screen.fullScreen = false;
         for (int i = 0; i < 20; i++)
         {
             buttonInteractable[0, i] = true;
@@ -53,6 +52,10 @@ public class GameManager : MonoBehaviour
     {
         upButton.interactable = buttonInteractable[0, floor.value];
         downButton.interactable = buttonInteractable[1, floor.value];
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
     private void Awake()
