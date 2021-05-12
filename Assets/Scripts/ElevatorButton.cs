@@ -87,6 +87,16 @@ public class ElevatorButton : MonoBehaviour
         }
         else
         {
+            if (UpElevators.Contains(ele) && taskLevel <= ele.lowLevel)
+            {
+                UpElevators.Remove(ele);
+                ele.GiveUpTask(true);
+            }
+            else if (DownElevators.Contains(ele) && taskLevel >= ele.highLevel)
+            {
+                DownElevators.Remove(ele);
+                ele.GiveUpTask(false);
+            }
             ele.buttons[taskLevel - 1] = true;
             if ((ele.highLevel == null && taskLevel > ele.level) || taskLevel > ele.highLevel)
             {
@@ -112,7 +122,6 @@ public class ElevatorButton : MonoBehaviour
 
     private void AddMoveTask(int taskLevel, Elevator ele)
     {
-        Debug.Log(ele);
         if (ele.buttons[taskLevel - 1])
         {
             return;
@@ -137,10 +146,6 @@ public class ElevatorButton : MonoBehaviour
                 {
                     ele.highLevel = taskLevel;
                 }
-                else
-                {
-                    
-                }
             }
         }
     }
@@ -148,7 +153,7 @@ public class ElevatorButton : MonoBehaviour
     private Elevator GetAvailavleElevator(int Index)
     {
         UDTask task = GameManager.Instance.mainTasks[Index];
-        bool?[] sameDir = new bool?[elevators.Length];
+        bool[] sameDir = new bool[elevators.Length];
         int[] distance = new int[elevators.Length];
         for (int i = 0; i < elevators.Length; i++)
         {
@@ -157,7 +162,7 @@ public class ElevatorButton : MonoBehaviour
             {
                 if (elevators[i].timer > 0 && distance[i] != 0)
                 {
-                    sameDir[i] = null;
+                    sameDir[i] = false;
                 }//电梯没有其他任务但还开着门,且收到的不是当前层的指令时，暂不处理
                 else
                 {
@@ -170,7 +175,7 @@ public class ElevatorButton : MonoBehaviour
                 {
                     if (DownElevators.Contains(elevators[i]))
                     {
-                        sameDir[i] = null;//已被调度且方向不同不可调度
+                        sameDir[i] = false;//已被调度且方向不同不可调度
                     }
                     else if (elevators[i].order == Order.Up)
                     {
@@ -180,28 +185,19 @@ public class ElevatorButton : MonoBehaviour
                         }
                         else
                         {
-                            if (UpElevators.Contains(elevators[i]))
-                            {
-                                sameDir[i] = null;
-                            }//已被调度且已经高于层数不可调度
-                            else
-                            {
-                                sameDir[i] = false;
-                            }//未被调度但已高于层数
-                            distance[i] = Mathf.Abs((int)elevators[i].highLevel - task.taskLevel);
+                            sameDir[i] = false;
                         }
                     }
                     else
                     {
                         sameDir[i] = false;
-                        distance[i] = Mathf.Abs((int)elevators[i].lowLevel - task.taskLevel);
                     }//未被调度但方向不同
                 }
                 else
                 {
                     if (UpElevators.Contains(elevators[i]))
                     {
-                        sameDir[i] = null;//已被调度且方向不同不可调度
+                        sameDir[i] = false;//已被调度且方向不同不可调度
                     }
                     else if (elevators[i].order == Order.Down)
                     {
@@ -211,21 +207,12 @@ public class ElevatorButton : MonoBehaviour
                         }
                         else
                         {
-                            if (DownElevators.Contains(elevators[i]))
-                            {
-                                sameDir[i] = null;
-                            }//已被调度且已经低于层数不可调度
-                            else
-                            {
-                                sameDir[i] = false;
-                            }//未被调度但已高于层数
-                            distance[i] = Mathf.Abs((int)elevators[i].lowLevel - task.taskLevel);
+                            sameDir[i] = false;
                         }
                     }
                     else
                     {
                         sameDir[i] = false;
-                        distance[i] = Mathf.Abs((int)elevators[i].highLevel - task.taskLevel);
                     }
                 }
             }//整理其他优先级并更新距离
@@ -233,7 +220,7 @@ public class ElevatorButton : MonoBehaviour
         int? num = null;
         for (int i = 0; i < elevators.Length; i++)
         {
-            if (sameDir[i] == true)
+            if (sameDir[i])
             {
                 if (num == null)
                 {
@@ -251,29 +238,7 @@ public class ElevatorButton : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < elevators.Length; i++)
-            {
-                if (sameDir[i] == false)
-                {
-                    if (num == null)
-                    {
-                        num = i;
-                    }
-                    else if (distance[i] < distance[(int)num])
-                    {
-                        num = i;
-                    }
-                }
-            }
-            if (num != null)
-            {
-                return elevators[(int)num];
-            }
-            else
-            {
-                return null;
-            }
+            return null;
         }
-
     }
 }

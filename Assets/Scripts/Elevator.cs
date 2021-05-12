@@ -38,16 +38,16 @@ public class Elevator : MonoBehaviour
                 buttons[level - 1] = false;
                 timer = 2.0f;
             }
-            if (taskStop[0, level-1])
+            if (taskStop[0, level - 1])
             {
                 GameManager.Instance.TaskFinished(new UDTask(Direction.Up, level), this);
-                taskStop[0, level-1] = false;
+                taskStop[0, level - 1] = false;
                 timer = 2.0f;
             }
-            if (taskStop[1, level-1])
+            if (taskStop[1, level - 1])
             {
                 GameManager.Instance.TaskFinished(new UDTask(Direction.Down, level), this);
-                taskStop[1, level-1] = false;
+                taskStop[1, level - 1] = false;
                 timer = 2.0f;
             }
             if (timer <= 0)
@@ -104,18 +104,18 @@ public class Elevator : MonoBehaviour
                                 order = Order.Down;
                             }
                         }
-                        if(taskStop[0,level-1])
+                        if (taskStop[0, level - 1])
                         {
                             GameManager.Instance.TaskFinished(new UDTask(Direction.Up, level), this);
-                            taskStop[0, level-1] = false;
+                            taskStop[0, level - 1] = false;
                         }
                     }
-                    else if (taskStop[0, level-1] || highLevel == level)
+                    else if (taskStop[0, level - 1] || highLevel == level)
                     {
                         GameManager.Instance.TaskFinished(new UDTask(Direction.Up, level), this);
                         timer = 2.0f;
                         state = Direction.Stop;
-                        taskStop[0, level-1] = false;
+                        taskStop[0, level - 1] = false;
                         if (level == highLevel)
                         {
                             highLevel = null;
@@ -155,18 +155,18 @@ public class Elevator : MonoBehaviour
                                 order = Order.Up;
                             }
                         }
-                        if(taskStop[1,level-1])
+                        if (taskStop[1, level - 1])
                         {
                             GameManager.Instance.TaskFinished(new UDTask(Direction.Down, level), this);
-                            taskStop[1, level-1] = false;
+                            taskStop[1, level - 1] = false;
                         }
                     }
-                    else if (taskStop[1, level-1] || lowLevel == level)
+                    else if (taskStop[1, level - 1] || lowLevel == level)
                     {
                         GameManager.Instance.TaskFinished(new UDTask(Direction.Down, level), this);
                         timer = 2.0f;
                         state = Direction.Stop;
-                        taskStop[1, level-1] = false;
+                        taskStop[1, level - 1] = false;
                         if (level == lowLevel)
                         {
                             lowLevel = null;
@@ -176,7 +176,7 @@ public class Elevator : MonoBehaviour
                             }
                             else
                             {
-                                order = Order.Down;
+                                order = Order.Up;
                             }
                         }
                     }
@@ -220,4 +220,30 @@ public class Elevator : MonoBehaviour
         }
     }
 
+    public void GiveUpTask(bool isUp)
+    {
+        if (isUp)
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                if (taskStop[0, i])
+                {
+                    taskStop[0, i] = false;
+                    GameManager.Instance.TaskRestart(new UDTask(Direction.Up, i + 1));
+                }
+            }
+        }
+        else
+        {
+            for (int i = 19; i >= 0; i--)
+            {
+                if (taskStop[1, i])
+                {
+                    taskStop[1, i] = false;
+                    GameManager.Instance.TaskRestart(new UDTask(Direction.Down, i + 1));
+                }
+            }
+        }
+
+    }
 }

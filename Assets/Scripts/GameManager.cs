@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
     {
         upButton.interactable = buttonInteractable[0, floor.value];
         downButton.interactable = buttonInteractable[1, floor.value];
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }
@@ -77,9 +77,7 @@ public class GameManager : MonoBehaviour
 
     public void TaskFinished(UDTask task, Elevator elevator)
     {
-        Debug.Log(elevator);
         dispachedTasks.Remove(task);
-        Debug.Log(task.taskLevel);
         if (task.dir == Direction.Up)
         {
             buttonInteractable[0, task.taskLevel - 1] = true;
@@ -97,4 +95,18 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-};
+
+    public void TaskRestart(UDTask task)
+    {
+        dispachedTasks.Remove(task);
+        mainTasks.Insert(0, task);
+        if (task.dir == Direction.Up)
+        {
+            buttonInteractable[0, task.taskLevel - 1] = false;
+        }
+        else
+        {
+            buttonInteractable[1, task.taskLevel - 1] = false;
+        }
+    }
+}
