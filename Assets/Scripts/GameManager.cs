@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     public Dropdown number;
     public Button upButton;
     public Button downButton;
+    public Button exitButton;
     public List<UDTask> mainTasks = new List<UDTask>();
     public List<UDTask> dispachedTasks = new List<UDTask>();
     public bool[,] buttonInteractable = new bool[2, 20];
@@ -45,6 +46,7 @@ public class GameManager : MonoBehaviour
             AddUDTask(Direction.Down);
             buttonInteractable[1, floor.value] = false;
         });
+        exitButton.onClick.AddListener(Application.Quit);
     }
 
     // Update is called once per frame

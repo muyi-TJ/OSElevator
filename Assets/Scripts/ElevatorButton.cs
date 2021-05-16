@@ -3,14 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MoveTask
-{
-    readonly int taskLevel=1;
-    public MoveTask(int taskFloor)
-    {
-        taskLevel = taskFloor;
-    }
-}
 
 public class ElevatorButton : MonoBehaviour
 {

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEditor;
 
@@ -27,6 +28,8 @@ public class Elevator : MonoBehaviour
     public bool[] buttons = new bool[20];
     public float timer = 0.0f;
     public bool[,] taskStop = new bool[2, 20];
+    public Image EleFloor;
+    public Image EleStatus;
 
     private void Update()
     {
@@ -184,7 +187,19 @@ public class Elevator : MonoBehaviour
                 }
             }
         }
-
+        EleFloor.GetComponentInChildren<Text>().text = level.ToString();
+        if(order==Order.Down)
+        {
+            EleStatus.GetComponentInChildren<Text>().text = "↓";
+        }
+        else if(order==Order.Up)
+        {
+            EleStatus.GetComponentInChildren<Text>().text = "↑";
+        }
+        else
+        {
+            EleStatus.GetComponentInChildren<Text>().text = " ";
+        }
     }
 
     private void Start()
